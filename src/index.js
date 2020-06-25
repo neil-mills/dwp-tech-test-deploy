@@ -9,8 +9,7 @@ const express_1 = __importDefault(require("express"));
 const apollo_server_express_1 = require("apollo-server-express");
 const resolvers_1 = require("./lib/resolvers");
 const typeDefs_1 = require("./lib/typeDefs");
-const port = process.env.port || 9000;
-const app = express_1.default();
+const port = process.env.PORT || 9000;
 const mount = (app) => {
     app.use(express_1.default.static(`${__dirname}/client`));
     app.get('/', (req, res) => res.sendFile(`${__dirname}/client/index.html`));
@@ -23,3 +22,8 @@ const mount = (app) => {
     console.log(`Server is running on port ${port}`);
 };
 mount(express_1.default());
+// const server = new GraphQLServer({
+//   typeDefs: './src/schema.graphql',
+//   resolvers,
+// });
+//server.start(() => console.log('Server is running on port 4000'));
