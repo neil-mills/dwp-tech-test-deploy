@@ -8,10 +8,14 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.resolvers = void 0;
-const { getDistance } = require('geolib');
-const axios = require('axios');
+const geolib_1 = require("geolib");
+const axios_1 = __importDefault(require("axios"));
+const logger_1 = __importDefault(require("./logger"));
 const baseUrl = 'https://bpdts-test-app.herokuapp.com';
 const london = {
     latitude: 51.50853,
@@ -19,17 +23,16 @@ const london = {
 };
 const maxDistance = 50;
 const getDistanceFromLondon = (latitude, longitude) => {
-    const metres = getDistance(Object.assign({}, london), { latitude, longitude });
+    const metres = geolib_1.getDistance(Object.assign({}, london), { latitude, longitude });
     return metres / 1609.34;
 };
 exports.resolvers = {
     Query: {
         londonUsers: () => __awaiter(void 0, void 0, void 0, function* () {
-            // throw new Error('test error!!')
             try {
                 const [livingInLondonUsers, allUsers] = yield Promise.all([
-                    axios.get(`${baseUrl}/city/London/users`),
-                    axios.get(`${baseUrl}/users`),
+                    axios_1.default.get(`${baseUrl}/city/London/users`),
+                    axios_1.default.get(`${baseUrl}/users`),
                 ]);
                 const currentlyNearLondonUsers = allUsers.data
                     .reduce((res, user) => {
@@ -56,6 +59,7 @@ exports.resolvers = {
                 return users;
             }
             catch (error) {
+                logger_1.default.info(error.message, error);
                 throw new Error(error);
             }
         }),
